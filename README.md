@@ -8,6 +8,8 @@ Welcome to your new celebration scheduling assistant.
 You're a couple clicks away from the optimal dessert distribution.
 
 ## How to use the scheduler
+### 0. Clone this repository
+`git clone https://github.com/nkullman/birthday-fairy-assistant.git`
 ### 1. Modify the input data
 1. __Soup dates__
     - A list of dates in mm-dd-yy format (demo data are the Wednesdays of the 30 weeks of instruction in UW's 2016-2017 academic year)
@@ -19,3 +21,13 @@ You're a couple clicks away from the optimal dessert distribution.
     - The last column determines whether the constraint is one forbidding an assignment or requiring an assignment (allowable values in this column are "forbid" and "require")
     - The second column determines whether the constraint is for a person's celebration or preparation of dessert (allowable values in this column are "celebrate" and "prepare").
     - For example, the first line in the demo file adds the constraint that says "We cannot celebrate George Washington's birthday at the soup on January 4, 2017." The second line adds the constraint saying "Larry Bird must prepare a birthday dessert on October 5, 2016."
+
+### 2. Make sure you have what you need
+The scheduler requires the following:
+ - The CPLEX executable in your PATH environment variable
+ - Python 3.x and a few common libraries: math, os, datetime, and pandas
+ 
+### 3. Run `bfScheduler.py`
+
+### 4. Behold your optimal solution
+Your assignments are in `bfAssignments.csv`
