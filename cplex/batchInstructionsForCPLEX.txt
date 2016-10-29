@@ -3,5 +3,5 @@ set timelimit 600
 
 read bfOptModel.lp
 opt
-write bfOptSolution.sol
+write cplex/bfOptSolution.sol
 quit
