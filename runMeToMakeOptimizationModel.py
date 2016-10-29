@@ -28,7 +28,7 @@ for idx,row in ppl_bdays.iterrows():
 for entry in Dj:
     Dj[entry] = [soupDates_yday_calday[yday] for yday in Dj[entry]]
 
-with open ("bfOptModel.txt",'w') as f:
+wwith open ("bfOptModel.lp",'w') as f:
     
     # write objective function
     f.write("MINIMIZE\n")
