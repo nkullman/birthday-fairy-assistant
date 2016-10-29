@@ -1,1 +1,0 @@
-"cplex" < "cplex/batchInstructionsForCPLEX.txt"
