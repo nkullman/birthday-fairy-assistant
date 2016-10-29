@@ -1,7 +1,7 @@
 set mip tolerances integrality 0
 set timelimit 600
 
-read bfOptModel.lp
+read cplex/bfOptModel.lp
 opt
 write cplex/bfOptSolution.sol
 quit
