@@ -1,0 +1,7 @@
+set mip tolerances integrality 0
+set timelimit 600
+
+read bfOptModel.lp
+opt
+write bfOptSolution.sol
+quit
