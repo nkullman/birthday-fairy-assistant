@@ -11,11 +11,11 @@ You're a couple clicks away from the optimal dessert distribution.
 ### 0. Clone this repository
 `git clone https://github.com/nkullman/birthday-fairy-assistant.git`
 ### 1. Modify the input data
-1. __Soup dates__
+1. __Soup dates__ `input\_data/SoupDates.csv`
     - A list of dates in mm-dd-yy format (demo data are the Wednesdays of the 30 weeks of instruction in UW's 2016-2017 academic year)
-2. __Your participants and their birthdays__
+2. __Your participants and their birthdays__ `input\_data/ParticipantsAndBdays.csv`
     - A list of participants names and their birthdays in mm-dd format
-3. __Any other custom constraints__
+3. __Any other custom constraints__ `input\_data/CustomConstraints.csv`
     - A list of names, events, dates, and conditions that define custom constraints
     - The names must match a participant's name exactly, and the dates must match a soup date exactly (including the mm-dd-yy formatting)
     - The last column determines whether the constraint is one forbidding an assignment or requiring an assignment (allowable values in this column are "forbid" and "require")
