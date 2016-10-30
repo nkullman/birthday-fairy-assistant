@@ -1,5 +1,14 @@
+# CPLEX items
 *.lp
 *.log
 *.sol
 
+# TeX items
+*.bbl
+*.aux
+*.blg
+*.out
+*.synctex.gz
+
+# Development-related items
 *.ipynb
