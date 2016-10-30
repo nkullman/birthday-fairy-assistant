@@ -22,7 +22,7 @@ The model here tries to keep Birthday Fairy heads in place by minimizing the num
 \begin{itemize}
 \item $K$: set of soup dates
 \item $P$: set of participants
-\item $D_j$: set of acceptable dates for the birthday celebration for participant $j \in P$
+\item $D_j$: set of acceptable dates for the birthday celebration for participant $j \in P$, which is assumed to mean ``somewhere in the vicinity of either their birthday or half-birthday''
 \end{itemize}
 
 \paragraph{Decision variables}
@@ -76,9 +76,7 @@ x_{ijk}, y_k, w_{k,k+1} &\in \{0,1\} \qquad \forall i,j \in P, i \neq j, \forall
 
 \paragraph{Equation \eqref{eq:evGetsCake}} requires that each participant $j \in P$ must receive a dessert.
 
-\paragraph{Equation \eqref{eq:evGetsGoodDay}} requires that each participant $j \in P$ must receive cake on a ``good day'' for them, which is assumed to mean ``somewhere in the vicinity of either their birthday or half-birthday''.
-
-\paragraph{Equation \eqref{eq:yTrig}} controls the value of the trigger variable $y_k$, taking value 0 if no desserts are assigned to be brought on date $k$.
+\paragraph{Equation \eqref{eq:evGetsGoodDay}} requires that each participant $j \in P$ must receive cake on a ``good day'' for them.
 
 \paragraph{Equation \eqref{eq:yTrig}} controls the value of the trigger variable $y_k$, taking value 0 if no desserts are assigned to be brought on date $k$.
 
