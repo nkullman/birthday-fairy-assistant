@@ -21,23 +21,24 @@ def main():
     ppl_bdays = pd.read_csv("input_data/ParticipantsAndBdays.csv",header=None)
     custConstraints = pd.read_csv("input_data/CustomConstraints.csv",header=None)
 
-    # Compute sets of "good celebration days" for each person
+    # Compute sets of "good celebration days" for each participant j
     Dj = {}
     # first, the days of the year on which soups fall
     soupDates_yday = [datetime.datetime.strptime(x,"%m-%d-%y").timetuple().tm_yday for x in dates[0].values]
-    # some sloppy rearrangement to clean up on a later date
+    # some sloppy rearrangement (clean this up on a later date)
     soupDates_yday_calday = {}
     for x in dates[0].values:
         soupDates_yday_calday[datetime.datetime.strptime(x,"%m-%d-%y").timetuple().tm_yday] = x
-    # By default, "good days" are the 4 soup days closest to that person's birthday or half-birthday
+        
     for idx,row in ppl_bdays.iterrows():
         bday = datetime.datetime.strptime(row[1],"%m-%d")
         bday_yday = bday.timetuple().tm_yday
         halfBday_yday = (bday + datetime.timedelta(days=(math.floor(365/2)))).timetuple().tm_yday
-        Dj[idx] = sorted(soupDates_yday, key=lambda 
-                                soupday: min(abs(soupday-bday_yday),
-                                                abs(soupday-halfBday_yday)))[0:numDaysThatCanBeGood]
-    # Making use of above sloppiness
+        Dj[idx] = sorted(soupDates_yday,
+                         key=lambda soupday: min(abs(soupday-bday_yday),
+                                                abs(soupday-halfBday_yday))
+                        )[0:numDaysThatCanBeGood]
+    # Making use of the slop from above
     for entry in Dj:
         Dj[entry] = [soupDates_yday_calday[yday] for yday in Dj[entry]]
 
@@ -94,7 +95,7 @@ def main():
                     f.write("+ x_"+str(i)+"_"+str(j)+"_"+str(k)+"\n")
             f.write(" >= 0 \n")
             
-        # write constraint: count of bdays on date k
+        # write constraint: count of celebrations on date k (unused accounting constraint)
         for k in dates.index:
             f.write("Date_"+str(k)+"_NumCakes: -n_"+str(k)+"\n")
             for i in ppl_bdays.index:
