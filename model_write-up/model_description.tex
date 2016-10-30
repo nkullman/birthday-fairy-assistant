@@ -1,0 +1,87 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{hyperref}
+
+\author{N. Kullman}
+\title{Birthday Fairy Scheduling Assistant}
+\begin{document}
+\maketitle
+
+\section*{Motivation}
+The Birthday Fairy brings joy to all, deciding when desserts will be had and who shall prepare them. But God help the Birthday Fairy if there's a dessert drought. People need cake, and if forced to go without, Birthday Fairy heads will roll.
+
+The model here tries to keep Birthday Fairy heads in place by minimizing the number of consecutive dessert-less soups.
+
+\section*{Model Notation}
+\paragraph{Parameters}
+\begin{itemize}
+\item $K$: set of soup dates
+\item $P$: set of participants
+\item $D_j$: set of acceptable dates for the birthday celebration for participant $j \in P$
+\end{itemize}
+
+\paragraph{Decision variables}
+$$
+x_{ijk} = \begin{cases}
+1 &\text{ if participant $i$ is assigned to bring dessert for participant $j$ on date $k$}\\
+0 &\text{ otherwise}
+\end{cases}
+$$
+
+\paragraph{Indicator variables}
+\begin{align*}
+w_{k,k+1} &= \begin{cases}
+1 &\text{ if no dessert is provided on consecutive dates $k$ and $k+1$}\\
+0 &\text{ otherwise}
+\end{cases}
+\\
+y_{k} &= \begin{cases}
+1 &\text{ if dessert is provided on date $k$}\\
+0 &\text{ otherwise}
+\end{cases}
+\end{align*}
+
+\section*{Model Formulation}
+\noindent Objective function:
+\begin{align}
+Minimize & \notag \\
+& \sum_{k \in K} w_{k,k+1}
+\label{eq:obj}
+\end{align}
+Subject to:
+\begin{align}
+\sum_{j \in P, j \neq i} \sum_{k \in K} x_{ijk} &= 1 \qquad \forall i \in P
+\label{eq:evBakes} \\
+\sum_{i \in P, i \neq j} \sum_{k \in K} x_{ijk} &= 1 \qquad \forall j \in P
+\label{eq:evGetsCake} \\
+\sum_{i \in P, i \neq j} \sum_{k \in K \backslash D_j} x_{ijk} &= 0 \qquad \forall j \in P
+\label{eq:evGetsGoodDay} \\
+\sum_{i \in P} \sum_{j \in P, j \neq i} x_{ijk} &\ge y_k \qquad \forall k \in K
+\label{eq:yTrig} \\
+1 - y_k - y_{k+1} & \le w_{k,k+1} \qquad \forall k \in K
+\label{eq:wTrig} \\
+x_{ijk}, y_k, w_{k,k+1} &\in \{0,1\} \qquad \forall i,j \in P, i \neq j, \forall k \in K
+\label{eq:binary}
+\end{align}
+
+\section*{Model Description}
+\paragraph{Equation \eqref{eq:obj}} is the objective function minimizing the number of consecutive weeks without dessert.
+
+\paragraph{Equation \eqref{eq:evBakes}} requires that each participant $i \in P$ must bring a dessert.
+
+\paragraph{Equation \eqref{eq:evGetsCake}} requires that each participant $j \in P$ must receive a dessert.
+
+\paragraph{Equation \eqref{eq:evGetsGoodDay}} requires that each participant $j \in P$ must receive cake on a ``good day'' for them, which is assumed to mean ``somewhere in the vicinity of either their birthday or half-birthday''.
+
+\paragraph{Equation \eqref{eq:yTrig}} controls the value of the trigger variable $y_k$, taking value 0 if no desserts are assigned to be brought on date $k$.
+
+\paragraph{Equation \eqref{eq:yTrig}} controls the value of the trigger variable $y_k$, taking value 0 if no desserts are assigned to be brought on date $k$.
+
+\paragraph{Equation \eqref{eq:wTrig}} controls the value of the trigger variable $w_{k,k+1}$, taking value 0 if no desserts are assigned to be brought on either date $k$ or date $k+1$.
+
+\end{document}
