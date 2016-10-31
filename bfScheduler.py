@@ -42,17 +42,46 @@ def main():
     for entry in Dj:
         Dj[entry] = [soupDates_yday_calday[yday] for yday in Dj[entry]]
 
+    # Compute matrix of days between soups
+    delta = [[0 for x in range(len(dates))] for x in range(len(dates))]
+    for k1 in dates.index:
+        for k2 in dates.index:
+            delta[k1][k2] = abs(soupDates_yday[k1]-soupDates_yday[k2])
+
+    # Compute Delta (big M)
+    M = max(map(max, delta))
+
     print("Writing the model file...")
     with open ("cplex/bfOptModel.lp",'w') as f:
         
         # write objective function
         f.write("MINIMIZE\n")
-        f.write("OBJECTIVE:\n")
-        for k in dates.index.drop(0):
-            f.write("+ w_"+str(k-1)+"_"+str(k)+"\n")
+        f.write("OBJECTIVE: d_max\n")
         
         # constraints
         f.write("\nSubject to:\n\n")
+
+        # lower bound on dmax
+        for k in dates.index:
+            f.write("dmax_GT_d_"+str(k)+": d_max - d_"+str(k) + " >= 0\n")
+
+        # constraints controlling the z vars
+        # 1) all dates must have a lower bound set
+        for k1 in dates.index:
+            f.write("z_"+str(k1)+"_Sum_GE_1: ")
+            for k2 in dates.index:
+                f.write(" + z_"+str(k1)+"_"+str(k2)+"\n")
+            f.write(" >= 1\n")
+
+        # 2) all dates lower bound must count up to a dessert day & 
+        # 3) all dates lower bound must be set to the value of a neighboring 
+        for k1 in dates.index:
+            for k2 in dates.index:
+                # 2
+                f.write("z_"+str(k1)+"_"+str(k2)+"_LE_y_"+str(k2)+": z_"+str(k1)+"_"+str(k2)+" - y_"+str(k2)+" <= 0\n")
+                # 3
+                f.write("BigConst_z_"+str(k1)+"_"+str(k2)+": z_"+str(k1)+"_"+str(k2)+
+                " - "+str(1/M)+" d_"+str(k1)+" + "+str((1/M)*delta[k1][k2])+" y_"+str(k2)+" <= 1\n")
         
         # write constraint: everyone bakes
         for i in ppl_bdays.index:
@@ -95,16 +124,6 @@ def main():
                     f.write("+ x_"+str(i)+"_"+str(j)+"_"+str(k)+"\n")
             f.write(" >= 0 \n")
             
-        # write constraint: count of celebrations on date k (unused accounting constraint)
-        for k in dates.index:
-            f.write("Date_"+str(k)+"_NumCakes: -n_"+str(k)+"\n")
-            for i in ppl_bdays.index:
-                for j in ppl_bdays.index:
-                    if i == j:
-                        continue
-                    f.write("+ x_"+str(i)+"_"+str(j)+"_"+str(k)+"\n")
-            f.write(" = 0 \n")
-            
         # write constraint: trigger for w_k-1,k    
         for k in dates.index.drop(0):
             f.write("Trigger_w_"+str(k-1)+"_"+str(k)+":  "+
@@ -135,8 +154,24 @@ def main():
                     f.write(" + x_"+str(i)+"_"+str(j)+"_"+str(k)+"\n")
                 f.write(ending)
         
+        # Bounds statement
+        f.write("\nBounds\n")
+        # d vars
+        for k in dates.index:
+            f.write("0 <= d_"+str(k)+"<= +inf\n")
+
+        # Generals statement
+        f.write("\nGeneral\n")
+        # d vars
+        for k in dates.index:
+            f.write("d_"+str(k)+"\n")
+        
         # Binary statement
-        f.write("Binary\n")
+        f.write("\nBinary\n")
+        # z vars
+        for k1 in dates.index:
+            for k2 in dates.index:
+                f.write("z_"+str(k1)+"_"+str(k2)+"\n")
         # w vars
         for k in dates.index.drop(0):
             f.write("w_"+str(k-1)+"_"+str(k)+"\n")
